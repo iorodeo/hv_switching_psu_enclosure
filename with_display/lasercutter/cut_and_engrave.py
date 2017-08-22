@@ -17,46 +17,47 @@ prog = gcode_cmd.GCodeProg()
 prog.add(gcode_cmd.GenericStart())
 prog.add(gcode_cmd.Space())
 
-if len(vectorLayerList) > 1:
-    # Etching
-    param = {
-            'fileName'    :  dxfFileName,
-            'layers'      :  engraveLayerList,
-            'dxfTypes'    :  ['LINE','ARC'],
-            'laserPower'  :  350,
-            'feedRate'    :  60,
-            'convertArcs' :  True,
-            'startCond'   : 'minX',
-            'direction'   : 'ccw',
-            'ptEquivTol'  :  0.4e-3,
-            }
-    
-    vectorEtch = cnc_laser.VectorCut(param)
-    prog.add(vectorEtch)
-    
-    # Cutting
-    param = {
-            'fileName'    :  dxfFileName,
-            'layers'      :  vectorLayerList,
-            'dxfTypes'    :  ['LINE','ARC','CIRCLE'],
-            'laserPower'  :  600,
-            'feedRate'    :  25,
-            'convertArcs' :  True,
-            'startCond'   : 'minX',
-            'direction'   : 'ccw',
-            'ptEquivTol'  :  0.4e-3,
-            }
-    
-    vectorCut = cnc_laser.VectorCut(param)
-    prog.add(vectorCut)
-    
-    prog.add(gcode_cmd.Space())
-    prog.add(gcode_cmd.End(),comment=True)
-    
-    baseName, ext = os.path.splitext(dxfFileName)
-    ngcFileName = '{0}.ngc'.format(baseName)
-    prog.write(ngcFileName)
+# Etching
+param = {
+        'fileName'    :  dxfFileName,
+        'layers'      :  engraveLayerList,
+        'dxfTypes'    :  ['LINE','ARC'],
+        'laserPower'  :  350,
+        'feedRate'    :  60,
+        'convertArcs' :  True,
+        'startCond'   : 'minX',
+        'direction'   : 'ccw',
+        'ptEquivTol'  :  0.4e-3,
+        }
 
+vectorEtch = cnc_laser.VectorCut(param)
+prog.add(vectorEtch)
+
+# Cutting
+param = {
+        'fileName'    :  dxfFileName,
+        'layers'      :  vectorLayerList,
+        'dxfTypes'    :  ['LINE','ARC','CIRCLE'],
+        'laserPower'  :  600,
+        'feedRate'    :  25,
+        'convertArcs' :  True,
+        'startCond'   : 'minX',
+        'direction'   : 'ccw',
+        'ptEquivTol'  :  0.4e-3,
+        }
+
+vectorCut = cnc_laser.VectorCut(param)
+prog.add(vectorCut)
+
+prog.add(gcode_cmd.Space())
+prog.add(gcode_cmd.End(),comment=True)
+
+baseName, ext = os.path.splitext(dxfFileName)
+ngcFileName = '{0}.ngc'.format(baseName)
+prog.write(ngcFileName)
+
+if len(vectorLayerList) == 1:
+    sys.exit(0)
 
 # Create individual cutting files for each set of layer numbers
 for engraveLayer, vectorLayer in zip(engraveLayerList,vectorLayerList):

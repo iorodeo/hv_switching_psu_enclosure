@@ -5,12 +5,12 @@ from py2gcode import cnc_laser
 
 dxfFileName = sys.argv[1]
 
-numLayer = 8 
-#engraveLayerList = ['engrave{0}'.format(i) for i in range(numLayer)]
-#vectorLayerList = ['vector{0}'.format(i) for i in range(numLayer)]
+numLayer = 6 
+engraveLayerList = ['engrave_{0}'.format(i) for i in range(numLayer)]
+vectorLayerList = ['vector_{0}'.format(i) for i in range(numLayer)]
 
-engraveLayerList = ['engrave',]
-vectorLayerList = ['vector', ]
+#engraveLayerList = ['engrave',]
+#vectorLayerList = ['vector', ]
 
 # Create full 24x24 cuting layout
 prog = gcode_cmd.GCodeProg()
